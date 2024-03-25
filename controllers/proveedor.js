@@ -26,19 +26,26 @@ const postProveedor = async(req, res) => {
     })
 }
 
-const putProveedor = async(req, res) => {
-    const { nombreProveedor, Nombrecontactoproveedor, Telefono, Direccion,Nit } = req.body //Desesctructurar
-    let mensaje = ''
+const putProveedor = async (req, res) => {
+    const { _id, nombreProveedor, Nombrecontactoproveedor, Telefono,Direccion,Nit } = req.body; // desestructura el array con los datos
+    let mensaje = '';
+
     try {
-        const proveedor = await Proveedor.findOneAndUpdate({nombreProveedor: nombreProveedor},
-        {Nombrecontactoproveedor:Nombrecontactoproveedor, Telefono:Telefono, Direccion:Direccion,Nit:Nit})
-        mensaje = 'Actualización exitosa'
+        const proveedor = await Proveedor.findOneAndUpdate(
+            {_id: _id}, // Búsqueda
+            { nombreProveedor, Nombrecontactoproveedor, Telefono,Direccion,Nit }, // Campos a editar
+            { new: true } // Para obtener el documento actualizado
+        );
+        
+        if (!proveedor) {
+            return res.status(404).json({ mensaje: 'No se encontró el proveedor' });
+        }
+    
+        mensaje = 'Actualización exitosa';
+        return res.status(200).json({ mensaje });
     } catch (error) {
-        mensaje = error
-    }   
-    res.json({
-        msg:mensaje
-    })
+        return res.status(500).json({ mensaje: 'Error en el servidor' });
+    }
 }
 
 const deleteProveedor = async (req, res) => {

@@ -26,20 +26,28 @@ const postProducto = async(req, res) => {
     })
 }
 
-const putProducto = async(req, res) => {
-    const { nombreProducto, precioProducto, ivaProducto, Existencias } = req.body //Desesctructurar
-    let mensaje = ''
+const putProducto = async (req, res) => {
+    const { _id, nombreProducto, precioProducto, ivaProducto,Existencias } = req.body; // desestructura el array con los datos
+    let mensaje = '';
+
     try {
-        const producto = await Producto.findOneAndUpdate({nombreProducto: nombreProducto},
-        {precioProducto:precioProducto, ivaProducto:ivaProducto, Existencias:Existencias})
-        mensaje = 'Actualización exitosa'
+        const producto = await Producto.findOneAndUpdate(
+            {_id: _id}, // Búsqueda
+            { nombreProducto, precioProducto, ivaProducto,Existencias }, // Campos a editar
+            { new: true } // Para obtener el documento actualizado
+        );
+        
+        if (!producto) {
+            return res.status(404).json({ mensaje: 'No se encontró el producto' });
+        }
+    
+        mensaje = 'Actualización exitosa';
+        return res.status(200).json({ mensaje });
     } catch (error) {
-        mensaje = error
-    }   
-    res.json({
-        msg:mensaje
-    })
+        return res.status(500).json({ mensaje: 'Error en el servidor' });
+    }
 }
+
 
 const deleteProducto = async (req, res) => {
     const { id } = req.query;
