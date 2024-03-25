@@ -18,7 +18,7 @@ const ProveedorSchema = ({
     },
 
     Direccion: {
-        type:Number,
+        type:String,
         required:[true, 'las existencias producto son requiridas']
     },
     Nit: {
